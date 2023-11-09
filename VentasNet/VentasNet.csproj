@@ -11,7 +11,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\VentasNet.Entity\VentasNet.Entity.csproj" />
+    <Folder Include="Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VentasNet.Infra\VentasNet.Infra.csproj" />
   </ItemGroup>
 
 </Project>

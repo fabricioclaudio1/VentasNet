@@ -4,10 +4,10 @@ namespace VentasNet.Models
 {
     public static class Listados
     {
-        public static List<Cliente> ListadoClientes { get; set; } = new List<Cliente>() {
-            new Cliente {Id=1, RazonSocial="qqq", CUIT= "123", Domicilio= "aaa", Estado=true, Provincia="salta"}, 
-            new Cliente {Id=2, RazonSocial="www", CUIT= "456", Domicilio= "sss", Estado=true, Provincia="tucuman"},
-            new Cliente {Id=3, RazonSocial="eee", CUIT= "789", Domicilio= "ddd", Estado=true, Provincia="jujuy"} };
+        public static List<ClienteReq> ListadoClientes { get; set; } = new List<ClienteReq>() {
+            new ClienteReq {Id=1, RazonSocial="qqq", CUIT= "123", Domicilio= "aaa", Estado=true, Provincia="salta"}, 
+            new ClienteReq {Id=2, RazonSocial="www", CUIT= "456", Domicilio= "sss", Estado=true, Provincia="tucuman"},
+            new ClienteReq {Id=3, RazonSocial="eee", CUIT= "789", Domicilio= "ddd", Estado=true, Provincia="jujuy"} };
         public static List<Proveedor> ListadoProveedor { get; set; } = new List<Proveedor>() {
             new Proveedor {Id=1, RazonSocial="prov123", CUIT="p123", Domicilio="rrr", Estado=true, Provincia="salta"},
             new Proveedor {Id=2, RazonSocial="prov456", CUIT="p456", Domicilio="ttt", Estado=true, Provincia="tucuman"},

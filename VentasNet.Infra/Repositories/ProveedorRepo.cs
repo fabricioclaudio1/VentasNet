@@ -1,6 +1,6 @@
 ﻿using VentasNet.Models;
 
-namespace VentasNet.Repositorio
+namespace VentasNet.Infra.Repositories
 {
     public static class ProveedorRepo
     {

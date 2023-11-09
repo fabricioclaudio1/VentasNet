@@ -1,34 +1,50 @@
 ﻿using VentasNet.Entity.Data;
+using VentasNet.Entity.Models;
+using VentasNet.Infra.DTO.Request;
+using VentasNet.Infra.DTO.Response;
 using VentasNet.Models;
 
 namespace VentasNet.Infra.Repositories
 {
     public class ClienteRepo
     {
-        VentasNetContext _context = new VentasNetContext();
+        private readonly VentasNetContext _context;
 
-        public bool AgregarCliente(Cliente objCliente) //Se trae el objeto que viene del front
+        public ClienteRepo() //Conexion
         {
-            var existeCliente = _context.Cliente.Where(x=> x.Cuit==objCliente.CUIT).FirstOrDefault();
+            _context = new VentasNetContext();
+        }
+
+        public ClienteResponse AddCliente(ClienteReq objCliente) //Se trae el objeto que viene del front
+        {
+            ClienteResponse clienteResponse = new ClienteResponse();
+
+            var existeCliente = GetClienteCuit(objCliente.Cuit);
             if (existeCliente == null) 
             {
                 try
                 {
                     _context.Add(objCliente);
-                    _context.SaveChanges();
+                    _context.SaveChanges();  //Agrego Cliente del formulario del front a la DB
+                    clienteResponse.Guardar = true;
+                    clienteResponse.RazonSocial = objCliente.RazonSocial;
                 }
                 catch(Exception ex) 
                 {
-
+                    clienteResponse.Mensaje = "Ocurrio un error al Agregar Cliente";
+                    clienteResponse.Guardar = false; //Solo para asegurarme
                 }  
                 
             }
-            return false;
+            return clienteResponse;
         }
 
-        public bool UpdateCliente(Cliente objCliente) //Se trae el objeto que viene del front
+        public ClienteResponse UpdateCliente(ClienteReq objCliente) //Se trae el objeto que viene del front
         {
-            var existeCliente = _context.Cliente.Where(x => x.Cuit == objCliente.CUIT).FirstOrDefault();
+            ClienteResponse clienteResponse = new ClienteResponse();
+
+
+            var existeCliente = GetClienteCuit(objCliente.Cuit);
 
             try
             {
@@ -36,55 +52,91 @@ namespace VentasNet.Infra.Repositories
                 existeCliente.Domicilio = objCliente.Domicilio;
                 _context.Update(existeCliente);
                 _context.SaveChanges();
+                clienteResponse.Guardar = true;
+                clienteResponse.RazonSocial = existeCliente.RazonSocial;
             }
             catch (Exception ex)
             {
-
+                clienteResponse.Mensaje = "Ocurrio un error al Modificar Cliente";
+                clienteResponse.Guardar = false; //Solo para asegurarme
             }
-            return false;
+            return clienteResponse;
         }
 
-        public List<Cliente> ListaDeClientes()
+        public ClienteResponse Delete(ClienteReq objCliente)
         {
-            //Instanciando Clase Cliente
-            List<Cliente> listadoCliente = new List<Cliente>(); //Necesito hacer un Listado y no un solo Cliente, por eso uso List<>
+            ClienteResponse clienteResponse = new ClienteResponse();
 
-            //Como traer una lista, en este caso de Clientes desde la base de datos con Entity
-            var listaClienteEntity= _context.Cliente.ToList();//Esto es analogo a un SELECT ALL (*), o sea trae todos los campos de Cliente: select * from Cliente => A la base de datos
-            var ClienteEntity = _context.Cliente.Where(x => x.IdCliente == 1).FirstOrDefault();
+            var existeCliente = GetClienteCuit(objCliente.Cuit);
 
-            listadoCliente.Add(new Cliente() { Id = 1, RazonSocial = "Simon.com", CUIT = "123123", Domicilio = "Lomas", Provincia = "Corrientes" });
+            try
+            {
+                existeCliente.Estado = false;
+                existeCliente.FechaBaja = DateTime.Now;
 
-            //Otra forma
-            Cliente cli= new Cliente() { Id = 2, RazonSocial = "Brian.com", CUIT = "12321123", Domicilio = "Lomas", Provincia = "Buenos Aires" };
-            listadoCliente.Add(cli);
-            
+                _context.Update(existeCliente);
+                _context.SaveChanges();
 
-            return listadoCliente;
+                clienteResponse.Guardar = true;
+                clienteResponse.RazonSocial = existeCliente.RazonSocial;
+            }
+            catch (Exception ex)
+            {
+                clienteResponse.Mensaje = "Ocurrio un error al Eliminar Cliente";
+                clienteResponse.Guardar = false; //Solo para asegurarme
+            }
+            return clienteResponse;
         }
 
-        public void ModificarCliente(Cliente nextCliente)
+        public Cliente GetClienteCuit(string cuit)
         {
-            int cantClientes = Listados.ListadoClientes.Count;
+            var cliente = _context.Cliente.Where(x => x.Cuit == cuit).FirstOrDefault();
 
-            nextCliente.Id = cantClientes+1;
-            nextCliente.Estado = true;
-            Listados.ListadoClientes.Add(nextCliente);
-
+            return cliente;
         }
 
-        public bool VerificarCliente(Cliente cli)
+        public List<ClienteReq> GetClientes() //Lista de Clientes
         {
-            bool existe = false;
+            ////Instanciando Clase Cliente
+            //List<ClienteReq> listadoCliente = new List<ClienteReq>(); //Necesito hacer un Listado y no un solo Cliente, por eso uso List<>
 
-            Cliente existeCliente = new Cliente();
-            existeCliente = Listados.ListadoClientes.Find(x => x.Id == cli.Id);
-            
-            if (existeCliente != null)
-                existe = true;
-          
-            return existe;
+            ////Como traer una lista, en este caso de Clientes desde la base de datos con Entity
+            //var listaClienteEntity= _context.Cliente.ToList();//Esto es analogo a un SELECT ALL (*), o sea trae todos los campos de Cliente: select * from Cliente => A la base de datos
+            //var ClienteEntity = _context.Cliente.Where(x => x.IdCliente == 1).FirstOrDefault();
+
+            //listadoCliente.Add(new ClienteReq() { Id = 1, RazonSocial = "Simon.com", CUIT = "123123", Domicilio = "Lomas", Provincia = "Corrientes" });
+
+            ////Otra forma
+            //ClienteReq cli= new ClienteReq() { Id = 2, RazonSocial = "Brian.com", CUIT = "12321123", Domicilio = "Lomas", Provincia = "Buenos Aires" };
+            //listadoCliente.Add(cli);
+
+            List<ClienteReq> listadoClientes = new List<ClienteReq>();
+
+            var lista= _context.Cliente.Where(x => x.Estado != false).ToList();
+
+            foreach (var item in lista) 
+            {
+                ClienteReq clienteReq = new ClienteReq();
+
+                clienteReq.IdCliente = item.IdCliente;
+                clienteReq.Nombre = item.Nombre;
+                clienteReq.Apellido = item.Apellido;
+                clienteReq.Cuit = item.Cuit;
+                clienteReq.RazonSocial = item.RazonSocial;
+                clienteReq.Domicilio = item.Domicilio;
+                clienteReq.Localidad = item.Localidad;
+                clienteReq.Estado = item.Estado;
+                clienteReq.FechaBaja = item.FechaBaja;
+                clienteReq.FechaAlta = item.FechaAlta;
+
+                listadoClientes.Add(clienteReq);
+            }
+
+            return listadoClientes;
         }
+
+        //Arriba se hicieron las operaciones CRUD
+
 
     }
 }

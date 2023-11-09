@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using VentasNet.Infra.DTO.Request;
+using VentasNet.Infra.Repositories;
 using VentasNet.Models;
-using VentasNet.Repositorio;
 
 namespace VentasNet.Controllers
 {
@@ -15,18 +16,20 @@ namespace VentasNet.Controllers
         }
         public IActionResult Listado()
         {
-            ViewBag.Cliente = Listados.ListadoClientes.Where(x => x.Estado == true);
+            ViewBag.Cliente = clienteRepo.GetClientes();
 
             return View();
 
         }
-        public IActionResult AgregarCliente(Cliente cli)
-        { 
+        public IActionResult AgregarCliente(ClienteReq cli)
+        {
+            var result= clienteRepo.AddCliente(cli);
+
             return View();
         }
 
         //[HttpPost]
-        public IActionResult GuardarCliente(Cliente nextCliente)
+        public IActionResult GuardarCliente(ClienteReq nextCliente)
         {
             bool existe = false;
 
@@ -45,21 +48,25 @@ namespace VentasNet.Controllers
             return RedirectToAction("Listado");
         }
 
-        public IActionResult Edit(int id)
+        public IActionResult Edit(ClienteReq cli)
         {
-            Cliente cli = new Cliente();
+            var result = clienteRepo.UpdateCliente(cli);
 
-            cli = Listados.ListadoClientes.Find(x => x.Id == id);
+            //Cliente cli = new Cliente();
+
+            //cli = Listados.ListadoClientes.Find(x => x.Id == id);
 
             return RedirectToAction("AgregarCliente", cli);
         }
-        public IActionResult Delete(int id)
+        public IActionResult Delete(ClienteReq cli)
         {
-            Cliente cli = new Cliente();
+            var clienteResponse = clienteRepo.Delete(cli);
 
-            cli = Listados.ListadoClientes.Find(x => x.Id == id);
+            //Cliente cli = new Cliente();
 
-            Listados.ListadoClientes.Remove(cli);
+            //cli = Listados.ListadoClientes.Find(x => x.Id == id);
+
+            //Listados.ListadoClientes.Remove(cli);
 
             return RedirectToAction("Listado");
         }
