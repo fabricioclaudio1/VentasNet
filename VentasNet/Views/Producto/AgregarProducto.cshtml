@@ -1,0 +1,44 @@
+﻿@{
+}
+
+@model Producto
+
+<h2>Cargar Usuario</h2>
+
+@using (Html.BeginForm("GuardarProducto", "Producto", FormMethod.Post))
+{
+    <div class="container">
+        <div class="panel-body">
+
+            <div class="form-group col-4 ">
+                @Html.LabelFor(x => x.Id)
+                @Html.TextBoxFor(model => model.Id, new {@class="form-control"})
+            </div>
+
+            <div class="form-group col-4 ">
+                @Html.LabelFor(x => x.IdProveedor)
+                @Html.TextBoxFor(model => model.IdProveedor, new {@class="form-control"})
+            </div>
+
+            <div class="form-group col-4 ">
+                @Html.LabelFor(x => x.NombreProducto)
+                @Html.TextBoxFor(model => model.NombreProducto, new {@class="form-control"})
+            </div>
+
+            <div class="form-group col-4 ">
+                @Html.LabelFor(x => x.Descripcion)
+                @Html.TextBoxFor(model => model.Descripcion, new {@class="form-control"})
+            </div>
+
+            <div class="form-group col-4 ">
+                @Html.LabelFor(x => x.ImporteProducto)
+                @Html.TextBoxFor(model => model.ImporteProducto, new {@class="form-control"})
+            </div>
+
+            <div class="form-group align-items-end">
+                <button class="btn btn-primary" type="submit">Guardar</button>
+            </div>
+
+        </div>
+    </div>
+}

@@ -1,0 +1,41 @@
+﻿@model IEnumerable<VentasNet.Models.Proveedor>
+
+@{
+    ViewData["Title"] = "Listado";
+    int n = Listados.ListadoProveedor.Count;
+}
+
+<h1>Lista de Proveedores @n</h1>
+
+<p><a class ="btn btn-primary" asp-action="Create" asp-controller="Proveedor">Nuevo Proveedor</a></p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Id)</th>
+            <th>@Html.DisplayNameFor(model => model.RazonSocial)</th>
+            <th>@Html.DisplayNameFor(model => model.CUIT)</th>
+            <th>@Html.DisplayNameFor(model => model.Domicilio)</th>
+            <th>@Html.DisplayNameFor(model => model.Provincia)</th>
+            <th>@Html.DisplayNameFor(model => model.Estado)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var proveedor in ViewBag.Proveedor) {
+        <tr>
+            <td>@proveedor.Id</td>
+            <td>@proveedor.RazonSocial</td>
+            <td>@proveedor.CUIT</td>
+            <td>@proveedor.Domicilio</td>
+            <td>@proveedor.Provincia</td>
+            <td>@proveedor.Estado</td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", "Proveedor", new Proveedor {Id = proveedor.Id}) |
+                @*@Html.ActionLink("Details", "Details", "Proveedor", new { Id = proveedor.Id }) |*@
+                @Html.ActionLink("Delete", "Delete", "Proveedor", new { Id = proveedor.Id })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

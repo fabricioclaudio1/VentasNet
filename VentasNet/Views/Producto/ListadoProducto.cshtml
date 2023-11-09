@@ -1,0 +1,36 @@
+﻿@model IEnumerable<VentasNet.Models.Producto>
+@{
+    int n = Listados.ListadoProducto.Count; //Para saber la cantidad de Clientes Totales
+}
+<h2>Lista de Productos Disponibles @n </h2>
+
+<button class="btn btn-primary" type="submit" asp-action="AgregarProducto" asp-controller="Producto">Agregar Producto</button>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Id)</th>
+            <th>@Html.DisplayNameFor(model => model.IdProveedor)</th>
+            <th>@Html.DisplayNameFor(model => model.NombreProducto)</th>
+            <th>@Html.DisplayNameFor(model => model.ImporteProducto)</th>
+
+        </tr> <!-- De esta forma la cabecera que tendria los nombres: Id, IdProveedor, NombreProducto, ImporteProducto-->
+    </thead>
+
+
+    @{
+        foreach (var producto in ViewBag.ProdDisponible)
+        {
+            <tr>
+                <td>@producto.Id</td>
+                <td>@producto.IdProveedor</td>
+                <td>@producto.NombreProducto</td>
+                <td>@producto.ImporteProducto</td>
+                <td>
+                    @Html.ActionLink("Modificar", "Edit", "Producto", new Producto {Id= producto.Id}) |
+                    @Html.ActionLink("Remover", "Delete", "Producto", new Producto {Id= producto.Id})
+                </td>
+            </tr>
+        }
+    }
+</table>
