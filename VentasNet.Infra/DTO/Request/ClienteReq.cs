@@ -18,3 +18,4 @@ namespace VentasNet.Infra.DTO.Request
         public DateTime? FechaBaja { get; set; }
         public int IdUsuario { get; set; }
     }
+}

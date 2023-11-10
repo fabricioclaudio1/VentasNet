@@ -1,4 +1,4 @@
-﻿@model IEnumerable<VentasNet.Models.Proveedor>
+﻿@model IEnumerable<VentasNet.Models.ProveedorReq>
 
 @{
     ViewData["Title"] = "Listado";
@@ -31,7 +31,7 @@
             <td>@proveedor.Provincia</td>
             <td>@proveedor.Estado</td>
             <td>
-                @Html.ActionLink("Edit", "Edit", "Proveedor", new Proveedor {Id = proveedor.Id}) |
+                @Html.ActionLink("Edit", "Edit", "Proveedor", new ProveedorReq {Id = proveedor.Id}) |
                 @*@Html.ActionLink("Details", "Details", "Proveedor", new { Id = proveedor.Id }) |*@
                 @Html.ActionLink("Delete", "Delete", "Proveedor", new { Id = proveedor.Id })
             </td>

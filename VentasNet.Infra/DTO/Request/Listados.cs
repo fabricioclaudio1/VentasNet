@@ -8,10 +8,10 @@ namespace VentasNet.Models
             new ClienteReq {Id=1, RazonSocial="qqq", CUIT= "123", Domicilio= "aaa", Estado=true, Provincia="salta"}, 
             new ClienteReq {Id=2, RazonSocial="www", CUIT= "456", Domicilio= "sss", Estado=true, Provincia="tucuman"},
             new ClienteReq {Id=3, RazonSocial="eee", CUIT= "789", Domicilio= "ddd", Estado=true, Provincia="jujuy"} };
-        public static List<Proveedor> ListadoProveedor { get; set; } = new List<Proveedor>() {
-            new Proveedor {Id=1, RazonSocial="prov123", CUIT="p123", Domicilio="rrr", Estado=true, Provincia="salta"},
-            new Proveedor {Id=2, RazonSocial="prov456", CUIT="p456", Domicilio="ttt", Estado=true, Provincia="tucuman"},
-            new Proveedor {Id=3, RazonSocial="prov789", CUIT="p789", Domicilio="yyy", Estado=true, Provincia="jujuy"}};
+        public static List<ProveedorReq> ListadoProveedor { get; set; } = new List<ProveedorReq>() {
+            new ProveedorReq {Id=1, RazonSocial="prov123", CUIT="p123", Domicilio="rrr", Estado=true, Provincia="salta"},
+            new ProveedorReq {Id=2, RazonSocial="prov456", CUIT="p456", Domicilio="ttt", Estado=true, Provincia="tucuman"},
+            new ProveedorReq {Id=3, RazonSocial="prov789", CUIT="p789", Domicilio="yyy", Estado=true, Provincia="jujuy"}};
 
         //Listado de Productos disponibles en el negocio
         public static List<Producto> ListadoProducto { get; set; } = new List<Producto>() { 

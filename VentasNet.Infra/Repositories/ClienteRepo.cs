@@ -43,23 +43,26 @@ namespace VentasNet.Infra.Repositories
         {
             ClienteResponse clienteResponse = new ClienteResponse();
 
-
             var existeCliente = GetClienteCuit(objCliente.Cuit);
 
-            try
+            if (existeCliente != null)
             {
-                existeCliente.Provincia = objCliente.Provincia;
-                existeCliente.Domicilio = objCliente.Domicilio;
-                _context.Update(existeCliente);
-                _context.SaveChanges();
-                clienteResponse.Guardar = true;
-                clienteResponse.RazonSocial = existeCliente.RazonSocial;
+               try
+               {
+                   existeCliente.Provincia = objCliente.Provincia;
+                   existeCliente.Domicilio = objCliente.Domicilio;
+                   _context.Update(existeCliente);
+                   _context.SaveChanges();
+                   clienteResponse.Guardar = true;
+                   clienteResponse.RazonSocial = existeCliente.RazonSocial;
+               }
+               catch (Exception ex)
+               {
+                   clienteResponse.Mensaje = "Ocurrio un error al Modificar Cliente";
+                   clienteResponse.Guardar = false; //Solo para asegurarme
+               } 
             }
-            catch (Exception ex)
-            {
-                clienteResponse.Mensaje = "Ocurrio un error al Modificar Cliente";
-                clienteResponse.Guardar = false; //Solo para asegurarme
-            }
+            
             return clienteResponse;
         }
 
@@ -69,22 +72,26 @@ namespace VentasNet.Infra.Repositories
 
             var existeCliente = GetClienteCuit(objCliente.Cuit);
 
-            try
+            if(existeCliente != null)
             {
-                existeCliente.Estado = false;
-                existeCliente.FechaBaja = DateTime.Now;
+                try
+                {
+                    existeCliente.Estado = false;
+                    existeCliente.FechaBaja = DateTime.Now;
 
-                _context.Update(existeCliente);
-                _context.SaveChanges();
+                    _context.Update(existeCliente); // Es update porque lo "borro" poniendo como estado = false 
+                    _context.SaveChanges();
 
-                clienteResponse.Guardar = true;
-                clienteResponse.RazonSocial = existeCliente.RazonSocial;
+                    clienteResponse.Guardar = true;
+                    clienteResponse.RazonSocial = existeCliente.RazonSocial;
+                }
+                catch (Exception ex)
+                {
+                    clienteResponse.Mensaje = "Ocurrio un error al Eliminar Cliente";
+                    clienteResponse.Guardar = false; //Solo para asegurarme
+                }
             }
-            catch (Exception ex)
-            {
-                clienteResponse.Mensaje = "Ocurrio un error al Eliminar Cliente";
-                clienteResponse.Guardar = false; //Solo para asegurarme
-            }
+            
             return clienteResponse;
         }
 
@@ -97,19 +104,6 @@ namespace VentasNet.Infra.Repositories
 
         public List<ClienteReq> GetClientes() //Lista de Clientes
         {
-            ////Instanciando Clase Cliente
-            //List<ClienteReq> listadoCliente = new List<ClienteReq>(); //Necesito hacer un Listado y no un solo Cliente, por eso uso List<>
-
-            ////Como traer una lista, en este caso de Clientes desde la base de datos con Entity
-            //var listaClienteEntity= _context.Cliente.ToList();//Esto es analogo a un SELECT ALL (*), o sea trae todos los campos de Cliente: select * from Cliente => A la base de datos
-            //var ClienteEntity = _context.Cliente.Where(x => x.IdCliente == 1).FirstOrDefault();
-
-            //listadoCliente.Add(new ClienteReq() { Id = 1, RazonSocial = "Simon.com", CUIT = "123123", Domicilio = "Lomas", Provincia = "Corrientes" });
-
-            ////Otra forma
-            //ClienteReq cli= new ClienteReq() { Id = 2, RazonSocial = "Brian.com", CUIT = "12321123", Domicilio = "Lomas", Provincia = "Buenos Aires" };
-            //listadoCliente.Add(cli);
-
             List<ClienteReq> listadoClientes = new List<ClienteReq>();
 
             var lista= _context.Cliente.Where(x => x.Estado != false).ToList();

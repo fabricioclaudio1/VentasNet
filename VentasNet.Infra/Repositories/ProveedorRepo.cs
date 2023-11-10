@@ -1,47 +1,135 @@
-﻿using VentasNet.Models;
+﻿using VentasNet.Entity.Data;
+using VentasNet.Entity.Models; //
+using VentasNet.Infra.DTO.Request; // 
+using VentasNet.Infra.DTO.Response;
+using VentasNet.Models;
 
 namespace VentasNet.Infra.Repositories
 {
-    public static class ProveedorRepo
+    public class ProveedorRepo
     {
-        public static bool VerificarProveedor(Proveedor nextProveedor)
-        {
-            bool existe = false;
+        private readonly VentasNetContext _context;
 
-            Proveedor existeProveedor = new Proveedor();
-            existeProveedor = Listados.ListadoProveedor.Find(x => x.Id == nextProveedor.Id);
+        public ProveedorRepo() //Conexion
+        {
+            _context = new VentasNetContext();
+        }
+
+        public ProveedorResponse AddProveedor(ProveedorReq objProveedor)
+        {
+            ProveedorResponse proveedorResponse = new ProveedorResponse();
+
+            var existeProveedor = GetProveedorCuit(objProveedor.Cuit);
+            if (existeProveedor == null)
+            {
+                try
+                {
+                    _context.Add(objProveedor);
+                    _context.SaveChanges();  //Agrego Proveedor del formulario del front a la DB
+                    proveedorResponse.Guardar = true;
+                    proveedorResponse.RazonSocial = objProveedor.RazonSocial;
+                }
+                catch (Exception ex)
+                {
+                    proveedorResponse.Mensaje = "Ocurrio un error al Agregar Proveedor";
+                    proveedorResponse.Guardar = false; //Solo para asegurarme
+                }
+
+            }
+            return proveedorResponse;
+        }
+
+        public ProveedorResponse UpdateProveedor(ProveedorReq objProveedor)
+        {
+            ProveedorResponse proveedorResponse = new ProveedorResponse();
+
+            var existeProveedor = GetProveedorCuit(objProveedor.Cuit);
 
             if (existeProveedor != null)
-                existe = true;
+            {
+                try
+                {
+                    existeProveedor.Telefono = objProveedor.Telefono;
+                    existeProveedor.Provincia = objProveedor.Provincia;
+                    _context.Update(objProveedor);
+                    _context.SaveChanges();
+                    proveedorResponse.Guardar = true;
+                    proveedorResponse.RazonSocial = existeProveedor.RazonSocial;
+                }
+                catch (Exception ex)
+                {
+                    proveedorResponse.Mensaje = "Error al Modificar Proveedor";
+                    proveedorResponse.Guardar= false;
+                }
+            }
 
-            return existe;
+            return proveedorResponse;
         }
 
-        public static void ModificarProveedor(Proveedor nextProveedor)
+        public ProveedorResponse DeleteProveedor(ProveedorReq objProveedor)
         {
-            Proveedor antiguoProv = new Proveedor();
-            antiguoProv = nextProveedor;
+            ProveedorResponse proveedorResponse = new ProveedorResponse();
 
-            var index = Listados.ListadoProveedor.FindIndex(x => x.Id == nextProveedor.Id);
-            Listados.ListadoProveedor.RemoveAt(index);
-            Listados.ListadoProveedor.Add(nextProveedor);
-            
+            var existeProveedor = GetProveedorCuit(objProveedor.Cuit);
+
+            if (existeProveedor != null)
+            {
+                try
+                {
+                    existeProveedor.Estado = false;
+
+                    _context.Update(objProveedor);
+                    _context.SaveChanges();
+
+                    proveedorResponse.Guardar = true;
+                    proveedorResponse.RazonSocial = existeProveedor.RazonSocial;
+                }
+                catch (Exception ex)
+                {
+                    proveedorResponse.Mensaje = "Error al Eliminar Proveedor";
+                    proveedorResponse.Guardar = false;
+                }
+            }
+
+            return proveedorResponse;
         }
 
-        internal static void ModificarId(Proveedor nextProveedor)
+        public Proveedor GetProveedorCuit(string cuit)
         {
-            nextProveedor.Id = Listados.ListadoProveedor.Count + 1;
-            nextProveedor.Estado = true;
-            Listados.ListadoProveedor.Add(nextProveedor);
+
+            var proveedor = _context.Proveedor.Where(x => x.Cuit == cuit).FirstOrDefault();
+
+            return proveedor;
+        }
+
+        public List<ProveedorReq> GetProveedores()
+        {
+            List<ProveedorReq> listaProveedores = new List<ProveedorReq>();
+
+            var lista = _context.Proveedor.Where(x => x.Estado != false).ToList();
+
+            foreach (var item in lista)
+            {
+                ProveedorReq proveedorReq = new ProveedorReq(); //LLeno proveedorReq con datos de la DB, en cada pasada los campos de proveedorReq tendra distintos valores
+
+                proveedorReq.IdProveedor = item.IdProveedor;
+                proveedorReq.RazonSocial = item.RazonSocial;
+                proveedorReq.Cuit = item.Cuit;
+                proveedorReq.Nombre = item.Nombre;
+                proveedorReq.Apellido = item.Apellido;
+                proveedorReq.Domicilio = item.Domicilio;
+                proveedorReq.Localidad = item.Localidad;
+                proveedorReq.Provincia = item.Provincia;
+                proveedorReq.Telefono = item.Telefono;
+                proveedorReq.Estado = item.Estado;
+                proveedorReq.FechaAlta = item.FechaAlta;
+                proveedorReq.FechaBaja = item.FechaBaja;
+                proveedorReq.IdUsuario = item.IdUsuario;
+
+                listaProveedores.Add(proveedorReq); //Agrego a la lista el objeto proveedorReq
+            }
+
+            return listaProveedores;
         }
     }
 }
-
-/*
-var index = Listados.ListadoProveedor.FindIndex(x => x.Id == nextProveedor.Id);
-
-Listados.ListadoProveedor[index].RazonSocial= nextProveedor.RazonSocial;
-Listados.ListadoProveedor[index].CUIT= nextProveedor.CUIT;
-Listados.ListadoProveedor[index].Domicilio= nextProveedor.Domicilio;
-Listados.ListadoProveedor[index].Provincia= nextProveedor.Provincia;
-*/

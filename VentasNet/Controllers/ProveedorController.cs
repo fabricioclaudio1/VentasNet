@@ -18,12 +18,12 @@ namespace VentasNet.Controllers
             return View();
         }
 
-        public IActionResult Create(Proveedor prov) //agregar proveedor
+        public IActionResult Create(ProveedorReq prov) //agregar proveedor
         {
             return View();
         }
 
-        public IActionResult GuardarProveedor(Proveedor nextProveedor) 
+        public IActionResult GuardarProveedor(ProveedorReq nextProveedor) 
         {
             if (nextProveedor.Estado == true)
             {
@@ -49,7 +49,7 @@ namespace VentasNet.Controllers
 
         public IActionResult Edit(int id)
         {
-            Proveedor prov = new Proveedor();
+            ProveedorReq prov = new ProveedorReq();
 
             prov = Listados.ListadoProveedor.Find(x => x.Id == id);
 
@@ -58,7 +58,7 @@ namespace VentasNet.Controllers
 
         public IActionResult Delete(int id)
         {
-            Proveedor? prov = new Proveedor();
+            ProveedorReq? prov = new ProveedorReq();
             prov = Listados.ListadoProveedor.Find(x => x.Id == id);
 
             if (prov != null)

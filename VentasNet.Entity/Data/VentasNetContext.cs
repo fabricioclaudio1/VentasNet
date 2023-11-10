@@ -21,6 +21,7 @@ namespace VentasNet.Entity.Data
         }
 
         public virtual DbSet<Cliente> Cliente { get; set; }
+        public virtual DbSet<Proveedor> Proveedor { get; set; }
         public virtual DbSet<Usuario> Usuario { get; set; }
         public virtual DbSet<VwUsuario> VwUsuario { get; set; }
 

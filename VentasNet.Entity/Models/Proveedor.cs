@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace VentasNet.Entity.Models
 {
-    public partial class Cliente
+    public partial class Proveedor
     {
-        public int IdCliente { get; set; }
+        public int IdProveedor { get; set; }
         public string RazonSocial { get; set; }
         public string Cuit { get; set; }
         public string Nombre { get; set; }
